@@ -1,0 +1,10 @@
+body {
+	background-color: #ccc;
+}
+
+h1, h3 {
+	font-family: courier;
+	font-weight: bold;
+	color: #000;
+	margin: 0px;
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="./index.css" />
+<head>
+</head>
+<body id="body">
+
+<script>
+var body = canvas = context = img = null;
+var assets = ['./m-falcom01.png',
+	'./m-falcom02.png',
+	'./m-falcom03.png',
+	'./m-falcom04.png',
+	'./m-falcom05.png',
+	'./m-falcom06.png'];
+var frame = 0;
+var frames = [];
+var frameRate = 1000/10;
+
+var init = function() {
+	//console.log("hey buddy");
+	body = document.getElementById('body');
+	canvas = document.createElement('canvas');
+	canvas.id = "canvas";
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	context = canvas.getContext('2d');
+	body.appendChild(canvas);
+
+	for (var i=0; i < assets.length; ++i) {
+		frames.push(new Image());
+		frames[i].onload = onImageLoad;
+		frames[i].src = assets[i];
+		console.log("just pushed " + frames[i].src);
+	}
+	setInterval(animate, frameRate);
+};
+
+var animate = function() {
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.drawImage(frames[frame], 2, 2);
+	frame = (frame + 1) % frames.length;
+};
+
+var onImageLoad = function() {
+	console.log("image was loaded sir");
+	//context.drawImage(img, 25, 25);
+};
+
+init();
+</script>
+</body>
+</html>
