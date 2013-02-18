@@ -1,0 +1,24 @@
+body {
+	background-color: #ccc;
+}
+
+h1, h3 {
+	font-family: courier;
+	font-weight: bold;
+	color: #000;
+	margin: 0px;
+}
+
+#locations {
+	margin: 25px;
+	background-color: #ddd;
+	padding: 10px;
+	font-family: courier;
+	font-size: 16px;
+}
+
+#map_canvas {
+	width: 600px;
+	height: 450px;
+	margin: 25px;
+}

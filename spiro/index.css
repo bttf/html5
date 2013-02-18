@@ -1,0 +1,19 @@
+body {
+	background-color:#000;
+}
+h1, h3 {
+	font-family: courier;
+	font-weight: bold;
+	color: #fff;
+	margin: 0px;
+}
+canvas {
+	margin-top: 25px;
+	#border: 1px solid white;
+}
+.small_text {
+	font-family: courier;
+	font-size: 8px;
+	color: #fff;
+	margin: 0px;
+}

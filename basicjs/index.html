@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="./index.css" />
+		<title>big talkin' boss by adnan</title>
+		<script>
+			function make_phrase() {
+				var words1 = ["24/7", "multi-Tier", "next-generation", "high-performance"];
+				var words2 = ["atomic", "fault-tolerant", "aligned", "scalable", "value-added"];
+				var words3 = ["open-source", "enterprise"];
+				var words4 = ["solution", "ecosystem"];
+
+				var rand1 = Math.floor(Math.random() * words1.length);
+				var rand2 = Math.floor(Math.random() * words2.length);
+				var rand3 = Math.floor(Math.random() * words3.length);
+				var rand4 = Math.floor(Math.random() * words4.length);
+
+				var phrase = "we are providing a " + words1[rand1] + ", " +
+					words2[rand2] + " " + words3[rand3] + " " + words4[rand4];
+				var phraseElement = document.getElementById('phrase');
+				phraseElement.innerHTML = phrase;
+			}
+			function sugar() {
+				var phraseElement = document.getElementById('phrase');
+				var phrase = phraseElement.innerHTML;
+				phrase += " ...<span class='sugar_on_top'>in the cloud!</span>";
+				phraseElement.innerHTML = phrase;
+			}
+		</script>
+	</head>
+	<body onload="make_phrase();">
+		<h1>big talkin' boss</h1>
+		<h3>by adnan</h3>
+		<span class="subtitle">refresh for a new phrase</span>
+		<div id="boss">
+			<img src="./tpsreports.png" />
+			<div id="phrase"></div>
+			<a id="sugar_anchor" href="javascript:sugar()">put some sugar on top</a>
+		</div>
+	</body>	
+</html>
