@@ -11,8 +11,19 @@
 			body = canvas = context = null;
 			var fps = (1000/4);
 			// initialize 'man', man
-			var man = new Image();
-			man.src = "./man/man_standing_south.png";
+			var man = ["./man/man_standing_west.png",
+				"./man/man_standing_north.png",
+				"./man/man_standing_east.png",
+				"./man/man_standing_south.png",
+				"./man/man_walking_west_left.png",
+				"./man/man_walking_west_right.png",
+				"./man/man_walking_north_left.png",
+				"./man/man_walking_north_right.png",
+				"./man/man_walking_east_left.png",
+				"./man/man_walking_east_right.png",
+				"./man/man_walking_south_left.png",
+				"./man/man_walking_south_right.png"];
+			var man_frames = [];
 			var man_state = "standing";
 			var man_direction = "south";
 			var man_x = null;
@@ -30,8 +41,12 @@
 				canvas.id = "canvas";
 				canvas.width = window.innerWidth;
 				canvas.height = window.innerHeight;
-				man_x = (canvas.width / 2) - (man.width / 2);
-				man_y = (canvas.height / 2) - (man.height / 2);
+				for (var i=0; i<man.length; ++i) {
+					man_frames.push(new Image());
+					man_frames[i].src = man[i];
+				}
+				man_x = (canvas.width / 2) - (man_frames[0].width / 2);
+				man_y = (canvas.height / 2) - (man_frames[0].height / 2);
 				context = canvas.getContext('2d');
 				body.appendChild(canvas);
 			};
@@ -39,43 +54,42 @@
 			var draw_man = function() {
 				switch (man_direction) {
 					case "north":
-					if (man_state == "standing") {
-						man.src = "./man/man_standing_north.png";
+						if (man_state == "standing") {
+						context.drawImage(man_frames[1], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { man.src = "./man/man_walking_north_left.png"; man_walk = 0; }
-					else { man.src = "./man/man_walking_north_right.png"; man_walk = 1; }
+					if (man_walk != 0) { context.drawImage(man_frames[6], man_x, man_y); man_walk = 0; }
+					else { context.drawImage(man_frames[7], man_x, man_y); man_walk = 1; }
 					man_y -= speed; 
 					break;
 					case "east":
-					if (man_state == "standing") {
-						man.src = "./man/man_standing_east.png";
+						if (man_state == "standing") {
+						context.drawImage(man_frames[2], man_x, man_y);	
 						break;
 					}
-					if (man_walk != 0) { man.src = "./man/man_walking_east_left.png"; man_walk = 0; }
-					else { man.src = "./man/man_walking_east_right.png"; man_walk = 1; }
+					if (man_walk != 0) { context.drawImage(man_frames[8], man_x, man_y); man_walk = 0; }
+					else { context.drawImage(man_frames[9], man_x, man_y); man_walk = 1; }
 					man_x += speed;
 					break;
 					case "south":
-					if (man_state == "standing") {
-						man.src = "./man/man_standing_south.png";
+						if (man_state == "standing") {
+						context.drawImage(man_frames[3], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { man.src = "./man/man_walking_south_left.png"; man_walk = 0; }
-					else { man.src = "./man/man_walking_south_right.png"; man_walk = 1; }
+					if (man_walk != 0) { context.drawImage(man_frames[10], man_x, man_y); man_walk = 0; }
+					else { context.drawImage(man_frames[11], man_x, man_y); man_walk = 1; }
 					man_y += speed;
 					break;
 					case "west":
-					if (man_state == "standing") {
-						man.src = "./man/man_standing_west.png";
+						if (man_state == "standing") {
+						context.drawImage(man_frames[0], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { man.src = "./man/man_walking_west_left.png"; man_walk = 0; }
-					else { man.src = "./man/man_walking_west_right.png"; man_walk = 1; }
+					if (man_walk != 0) { context.drawImage(man_frames[4], man_x, man_y); man_walk = 0; }
+					else { context.drawImage(man_frames[5], man_x, man_y); man_walk = 1; }
 					man_x -= speed;
 					break;
 				}
-				context.drawImage(man, man_x, man_y);
 			};
 
 			var loop = function() {
@@ -87,10 +101,10 @@
 			var keyup = function(e) {
 				switch (e.keyCode) {
 					case 37:
-					case 38:
-					case 39:
-					case 40:
-					man_state = "standing";
+						case 38:
+						case 39:
+						case 40:
+						man_state = "standing";
 					break;
 				}
 			};
@@ -98,19 +112,19 @@
 			var keydown = function(e) {	
 				switch (e.keyCode) {
 					case 37:
-					man_direction = "west";
+						man_direction = "west";
 					man_state = "walking";
 					break;
 					case 38:
-					man_direction = "north";
+						man_direction = "north";
 					man_state = "walking";
 					break;
 					case 39:
-					man_direction = "east";
+						man_direction = "east";
 					man_state = "walking";
 					break;
 					case 40:
-					man_direction = "south";
+						man_direction = "south";
 					man_state = "walking";
 					break;
 				}
