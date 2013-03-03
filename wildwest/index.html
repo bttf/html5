@@ -14,20 +14,31 @@
 			// var left_step = new Audio("./man/left.wav");
 			// var right_step = new Audio("./man/right.wav");
 			var stepping = new Audio("./man/stepping.wav");
+			stepping.preload = "auto";
 			stepping.loop = true;
+			var jukebox_music = new Audio("wichitalineman.mp3");
+			jukebox_music.preload = "auto";
+			var change = new Audio("change.wav");
+			change.preload = "auto";
+			// images
+			var jukebox = new Image();
+			jukebox.src = "./jukebox.png";
+			var jukebox_x = null;
+			var jukebox_y = null;
 			// initialize 'man', man
 			var man = ["./man/man_standing_west.png",
-				"./man/man_standing_north.png",
-				"./man/man_standing_east.png",
-				"./man/man_standing_south.png",
-				"./man/man_walking_west_left.png",
-				"./man/man_walking_west_right.png",
-				"./man/man_walking_north_left.png",
-				"./man/man_walking_north_right.png",
-				"./man/man_walking_east_left.png",
-				"./man/man_walking_east_right.png",
-				"./man/man_walking_south_left.png",
-				"./man/man_walking_south_right.png"];
+			"./man/man_standing_north.png",
+			"./man/man_standing_east.png",
+			"./man/man_standing_south.png",
+			"./man/man_walking_west_left.png",
+			"./man/man_walking_west_right.png",
+			"./man/man_walking_north_left.png",
+			"./man/man_walking_north_right.png",
+			"./man/man_walking_east_left.png",
+			"./man/man_walking_east_right.png",
+			"./man/man_walking_south_left.png",
+			"./man/man_walking_south_right.png",
+			"./man/man_paying.png"];
 			var man_frames = [];
 			var man_state = "standing";
 			var man_direction = "south";
@@ -52,14 +63,22 @@
 				}
 				man_x = (canvas.width / 2) - (man_frames[0].width / 2);
 				man_y = (canvas.height / 2) - (man_frames[0].height / 2);
+				jukebox_x = (canvas.width - (canvas.width / 6));
+				jukebox_y = (canvas.height / 12);
 				context = canvas.getContext('2d');
 				body.appendChild(canvas);
 			};
 
 			var draw_man = function() {
+				if (man_state == "paying") {
+					context.drawImage(man_frames[12], man_x, man_y);
+					change.play();
+					man_state = "standing";
+					return;
+				}
 				switch (man_direction) {
 					case "north":
-						if (man_state == "standing") {
+					if (man_state == "standing") {
 						context.drawImage(man_frames[1], man_x, man_y);
 						break;
 					}
@@ -68,7 +87,7 @@
 					man_y -= speed; 
 					break;
 					case "east":
-						if (man_state == "standing") {
+					if (man_state == "standing") {
 						context.drawImage(man_frames[2], man_x, man_y);	
 						break;
 					}
@@ -77,7 +96,7 @@
 					man_x += speed;
 					break;
 					case "south":
-						if (man_state == "standing") {
+					if (man_state == "standing") {
 						context.drawImage(man_frames[3], man_x, man_y);
 						break;
 					}
@@ -86,7 +105,7 @@
 					man_y += speed;
 					break;
 					case "west":
-						if (man_state == "standing") {
+					if (man_state == "standing") {
 						context.drawImage(man_frames[0], man_x, man_y);
 						break;
 					}
@@ -97,8 +116,22 @@
 				}
 			};
 
+			var draw_jukebox = function() {
+				context.drawImage(jukebox, jukebox_x, jukebox_y);
+			};
+
+			var man_is_near_jukebox = function() {
+				if (man_x <= jukebox_x <= (man_x + man_frames[0].width)) {
+					if (jukebox_y <= man_y + 150) {
+						return true;
+					}
+				}
+				return false;
+			};
+
 			var loop = function() {
 				clear_screen();
+				draw_jukebox();
 				draw_man();
 				setTimeout(loop, fps);
 			};
@@ -106,35 +139,42 @@
 			var keyup = function(e) {
 				switch (e.keyCode) {
 					case 37:
-						case 38:
-						case 39:
-						case 40:
-						man_state = "standing";
-						stepping.pause();
-						//stepping.currentTime = 0;
+					case 38:
+					case 39:
+					case 40:
+					man_state = "standing";
+					stepping.pause();
+					//stepping.currentTime = 0;
 					break;
 				}
 			};
 
 			var keydown = function(e) {	
 				switch (e.keyCode) {
+					case 32:
+					if (man_is_near_jukebox()) {
+						// play quarter sound
+						man_state = "paying";
+						jukebox_music.play();
+					}
+					break;
 					case 37:
-						man_direction = "west";
+					man_direction = "west";
 					man_state = "walking";
 					stepping.play();
 					break;
 					case 38:
-						man_direction = "north";
+					man_direction = "north";
 					man_state = "walking";
 					stepping.play();
 					break;
 					case 39:
-						man_direction = "east";
+					man_direction = "east";
 					man_state = "walking";
 					stepping.play();
 					break;
 					case 40:
-						man_direction = "south";
+					man_direction = "south";
 					man_state = "walking";
 					stepping.play();
 					break;
