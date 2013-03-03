@@ -10,6 +10,11 @@
 			var body, canvas, context;
 			body = canvas = context = null;
 			var fps = (1000/4);
+			// audio
+			// var left_step = new Audio("./man/left.wav");
+			// var right_step = new Audio("./man/right.wav");
+			var stepping = new Audio("./man/stepping.wav");
+			stepping.loop = true;
 			// initialize 'man', man
 			var man = ["./man/man_standing_west.png",
 				"./man/man_standing_north.png",
@@ -105,6 +110,8 @@
 						case 39:
 						case 40:
 						man_state = "standing";
+						stepping.pause();
+						//stepping.currentTime = 0;
 					break;
 				}
 			};
@@ -114,18 +121,22 @@
 					case 37:
 						man_direction = "west";
 					man_state = "walking";
+					stepping.play();
 					break;
 					case 38:
 						man_direction = "north";
 					man_state = "walking";
+					stepping.play();
 					break;
 					case 39:
 						man_direction = "east";
 					man_state = "walking";
+					stepping.play();
 					break;
 					case 40:
 						man_direction = "south";
 					man_state = "walking";
+					stepping.play();
 					break;
 				}
 			};
