@@ -49,10 +49,17 @@
 			var speed = 35;
 
 			var clear_screen = function() {
+				// console.log("inside clear_screen()");
 				context.clearRect(0, 0, canvas.width, canvas.height);
-			}
+			};
+
+			var man_onload = function() {
+				man_x = (canvas.width / 2) - (man_frames[0].width / 2);
+				man_y = (canvas.height / 2) - (man_frames[0].height / 2);
+			};
 
 			var init = function() {
+				// console.log("inside init()");
 				body = document.getElementsByTagName('body')[0];
 				canvas = document.createElement('canvas');
 				canvas.id = "canvas";
@@ -60,17 +67,23 @@
 				canvas.height = window.innerHeight;
 				for (var i=0; i<man.length; ++i) {
 					man_frames.push(new Image());
+					man_frames[i].onload = man_onload;
 					man_frames[i].src = man[i];
 				}
+				// console.log("man_frames length=" + man_frames.length);
+				// console.log("canvas height: " + canvas.height + " and canvas width: " + canvas.width);
+				// console.log("man_frames[0].width=" + man_frames[0].width + " man_frames[0].height=" + man_frames[0].height);
+				// console.log("man_x = " + man_x + " man_y = " + man_y);
 				man_x = (canvas.width / 2) - (man_frames[0].width / 2);
 				man_y = (canvas.height / 2) - (man_frames[0].height / 2);
 				jukebox_x = (canvas.width - (canvas.width / 6));
-				jukebox_y = (canvas.height / 12);
+				jukebox_y = (canvas.height / 6);
 				context = canvas.getContext('2d');
 				body.appendChild(canvas);
 			};
 
 			var draw_man = function() {
+				// console.log("inside draw_man()");
 				if (man_state == "paying") {
 					context.drawImage(man_frames[12], man_x, man_y);
 					change.play();
@@ -118,11 +131,13 @@
 			};
 
 			var draw_jukebox = function() {
+				// console.log("inside draw_jukebox()");
 				context.drawImage(jukebox, jukebox_x, jukebox_y);
 			};
 
 			var man_is_near_jukebox = function() {
-				if (man_x <= jukebox_x <= (man_x + man_frames[0].width)) {
+				// console.log("inside man_is_near_jukebox()");
+				if (man_x <= jukebox_x && jukebox_x <= (man_x + man_frames[0].width)) {
 					if (jukebox_y <= man_y + 150) {
 						return true;
 					}
@@ -131,6 +146,7 @@
 			};
 
 			var loop = function() {
+				// console.log("inside loop()");
 				clear_screen();
 				draw_jukebox();
 				draw_man();
@@ -138,6 +154,7 @@
 			};
 
 			var keyup = function(e) {
+				// console.log("inside keyup()");
 				switch (e.keyCode) {
 					case 37:
 					case 38:
@@ -151,6 +168,7 @@
 			};
 
 			var keydown = function(e) {	
+				// console.log("inside keydown()");
 				switch (e.keyCode) {
 					case 32:
 					if (man_is_near_jukebox()) {
@@ -183,6 +201,7 @@
 			};
 
 			var start = function() {
+				// console.log("inside start()");
 				init();
 				loop();
 			};
