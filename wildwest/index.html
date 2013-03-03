@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="./index.css" />
+		<title>wild west</title>
+	</head>
+	<body>
+		<script>
+			var body, canvas, context;
+			body = canvas = context = null;
+			var fps = 4;
+			// initialize 'man', man
+			var man = new Image();
+			man.src = "./man/still_south.png";
+			var man_state = "standing";
+			var man_direction = "south";
+			var man_x = null;
+			var man_y = null;
+
+			var init = function() {
+				body = document.getElementsByTagName('body')[0];
+				canvas = document.createElement('canvas');
+				canvas.id = "canvas";
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+				man_x = (canvas.width / 2);
+				man_y = (canvas.height / 2);
+				context = canvas.getContext('2d');
+				body.appendChild(canvas);
+			};
+
+			var draw_man = function() {
+				switch (man_direction) {
+					case "north":
+						break;
+					case "east":
+						break;
+					case "south":
+						if (man_state == "standing") {
+						context.drawImage(man_standing_south, man_x, man_y);
+						break;
+					}
+						// context.drawImage(man_walking_south, man_x, man_y);
+					break;
+					case "west":
+						break;
+				}
+			};
+
+			var loop = function() {
+				draw_man();
+				setTimeout(loop, fps);
+			};
+
+			var start = function() {
+				init();
+				loop();
+			};
+		</script>
+	</body>
+</html>
