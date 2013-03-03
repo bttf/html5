@@ -5,18 +5,24 @@
 		<link rel="stylesheet" href="./index.css" />
 		<title>wild west</title>
 	</head>
-	<body>
+	<body onload="start()" onkeydown="keydown(event)" onkeyup="keyup(event)" style="overflow: hidden">
 		<script>
 			var body, canvas, context;
 			body = canvas = context = null;
-			var fps = 4;
+			var fps = (1000/4);
 			// initialize 'man', man
 			var man = new Image();
-			man.src = "./man/still_south.png";
+			man.src = "./man/man_standing_south.png";
 			var man_state = "standing";
 			var man_direction = "south";
 			var man_x = null;
 			var man_y = null;
+			var man_walk = 0;
+			var speed = 35;
+
+			var clear_screen = function() {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+			}
 
 			var init = function() {
 				body = document.getElementsByTagName('body')[0];
@@ -24,8 +30,8 @@
 				canvas.id = "canvas";
 				canvas.width = window.innerWidth;
 				canvas.height = window.innerHeight;
-				man_x = (canvas.width / 2);
-				man_y = (canvas.height / 2);
+				man_x = (canvas.width / 2) - (man.width / 2);
+				man_y = (canvas.height / 2) - (man.height / 2);
 				context = canvas.getContext('2d');
 				body.appendChild(canvas);
 			};
@@ -33,24 +39,81 @@
 			var draw_man = function() {
 				switch (man_direction) {
 					case "north":
-						break;
-					case "east":
-						break;
-					case "south":
-						if (man_state == "standing") {
-						context.drawImage(man_standing_south, man_x, man_y);
+					if (man_state == "standing") {
+						man.src = "./man/man_standing_north.png";
 						break;
 					}
-						// context.drawImage(man_walking_south, man_x, man_y);
+					if (man_walk != 0) { man.src = "./man/man_walking_north_left.png"; man_walk = 0; }
+					else { man.src = "./man/man_walking_north_right.png"; man_walk = 1; }
+					man_y -= speed; 
+					break;
+					case "east":
+					if (man_state == "standing") {
+						man.src = "./man/man_standing_east.png";
+						break;
+					}
+					if (man_walk != 0) { man.src = "./man/man_walking_east_left.png"; man_walk = 0; }
+					else { man.src = "./man/man_walking_east_right.png"; man_walk = 1; }
+					man_x += speed;
+					break;
+					case "south":
+					if (man_state == "standing") {
+						man.src = "./man/man_standing_south.png";
+						break;
+					}
+					if (man_walk != 0) { man.src = "./man/man_walking_south_left.png"; man_walk = 0; }
+					else { man.src = "./man/man_walking_south_right.png"; man_walk = 1; }
+					man_y += speed;
 					break;
 					case "west":
+					if (man_state == "standing") {
+						man.src = "./man/man_standing_west.png";
 						break;
+					}
+					if (man_walk != 0) { man.src = "./man/man_walking_west_left.png"; man_walk = 0; }
+					else { man.src = "./man/man_walking_west_right.png"; man_walk = 1; }
+					man_x -= speed;
+					break;
 				}
+				context.drawImage(man, man_x, man_y);
 			};
 
 			var loop = function() {
+				clear_screen();
 				draw_man();
 				setTimeout(loop, fps);
+			};
+
+			var keyup = function(e) {
+				switch (e.keyCode) {
+					case 37:
+					case 38:
+					case 39:
+					case 40:
+					man_state = "standing";
+					break;
+				}
+			};
+
+			var keydown = function(e) {	
+				switch (e.keyCode) {
+					case 37:
+					man_direction = "west";
+					man_state = "walking";
+					break;
+					case 38:
+					man_direction = "north";
+					man_state = "walking";
+					break;
+					case 39:
+					man_direction = "east";
+					man_state = "walking";
+					break;
+					case 40:
+					man_direction = "south";
+					man_state = "walking";
+					break;
+				}
 			};
 
 			var start = function() {
