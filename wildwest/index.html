@@ -135,6 +135,11 @@
 				context.drawImage(jukebox, jukebox_x, jukebox_y);
 			};
 
+			var draw_text = function() {
+				context.font = "bold 12px sans-serif";
+				context.fillText("use the arrow keys and spacebar", (canvas.width / 16), (canvas.height - (canvas.height / 16)));
+			};
+
 			var man_is_near_jukebox = function() {
 				// console.log("inside man_is_near_jukebox()");
 				if (man_x <= jukebox_x && jukebox_x <= (man_x + man_frames[0].width)) {
@@ -149,6 +154,7 @@
 				// console.log("inside loop()");
 				clear_screen();
 				draw_jukebox();
+				draw_text();
 				draw_man();
 				setTimeout(loop, fps);
 			};
