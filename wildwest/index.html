@@ -4,12 +4,13 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="./index.css" />
 		<title>wild west</title>
+		<script src="./confetti.js"></script>
 	</head>
 	<body onload="start()" onkeydown="keydown(event)" onkeyup="keyup(event)" style="overflow: hidden">
 		<script>
 			var body, canvas, context;
 			body = canvas = context = null;
-			var fps = (1000/4);
+			var fps = (1000/32);
 			// audio
 			// var left_step = new Audio("./man/left.wav");
 			// var right_step = new Audio("./man/right.wav");
@@ -26,6 +27,14 @@
 			jukebox.src = "./jukebox.png";
 			var jukebox_x = null;
 			var jukebox_y = null;
+			var ratio = null;
+			var you_win = new Image();
+			you_win.src = "./you_win.png";
+			you_win.onload = function() {
+				ratio = (you_win.height / you_win.width);
+			}
+			var you_win_crop_width = 1;
+			var you_win_crop_height = 1;
 			// initialize 'man', man
 			var man = ["./man/man_standing_west.png",
 			"./man/man_standing_north.png",
@@ -46,7 +55,16 @@
 			var man_x = null;
 			var man_y = null;
 			var man_walk = 0;
-			var speed = 35;
+			var man_fps = 1;
+			var walk_fps = 10;
+			var speed = 5;
+			var key_pressed = false;
+			var you_won = false;
+			var start_confetti = false;
+			var cf = confetti({
+				fallspeed: 25
+			});
+			
 
 			var clear_screen = function() {
 				// console.log("inside clear_screen()");
@@ -88,6 +106,7 @@
 					context.drawImage(man_frames[12], man_x, man_y);
 					change.play();
 					man_state = "standing";
+					you_won = true;
 					return;
 				}
 				switch (man_direction) {
@@ -96,8 +115,10 @@
 						context.drawImage(man_frames[1], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { context.drawImage(man_frames[6], man_x, man_y); man_walk = 0; }
-					else { context.drawImage(man_frames[7], man_x, man_y); man_walk = 1; }
+					if (man_walk < walk_fps) { context.drawImage(man_frames[6], man_x, man_y); man_walk++; man_y -= speed; break;}
+					else if (man_walk < (walk_fps*2)) { context.drawImage(man_frames[7], man_x, man_y); man_walk++; man_y -= speed; break;}
+					context.drawImage(man_frames[6], man_x, man_y);
+					man_walk = 0;
 					man_y -= speed; 
 					break;
 					case "east":
@@ -105,8 +126,10 @@
 						context.drawImage(man_frames[2], man_x, man_y);	
 						break;
 					}
-					if (man_walk != 0) { context.drawImage(man_frames[8], man_x, man_y); man_walk = 0; }
-					else { context.drawImage(man_frames[9], man_x, man_y); man_walk = 1; }
+					if (man_walk < walk_fps) { context.drawImage(man_frames[8], man_x, man_y); man_walk++; man_x += speed; break; }
+					else if (man_walk < (walk_fps*2)) { context.drawImage(man_frames[9], man_x, man_y); man_walk++; man_x += speed; break; }
+					context.drawImage(man_frames[8], man_x, man_y);
+					man_walk = 0;
 					man_x += speed;
 					break;
 					case "south":
@@ -114,8 +137,10 @@
 						context.drawImage(man_frames[3], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { context.drawImage(man_frames[10], man_x, man_y); man_walk = 0; }
-					else { context.drawImage(man_frames[11], man_x, man_y); man_walk = 1; }
+					if (man_walk < walk_fps) { context.drawImage(man_frames[10], man_x, man_y); man_walk++; man_y += speed; break; }
+					else if (man_walk < (walk_fps*2)) { context.drawImage(man_frames[11], man_x, man_y); man_walk++; man_y += speed; break; }
+					context.drawImage(man_frames[10], man_x, man_y); 
+					man_walk = 0;
 					man_y += speed;
 					break;
 					case "west":
@@ -123,8 +148,10 @@
 						context.drawImage(man_frames[0], man_x, man_y);
 						break;
 					}
-					if (man_walk != 0) { context.drawImage(man_frames[4], man_x, man_y); man_walk = 0; }
-					else { context.drawImage(man_frames[5], man_x, man_y); man_walk = 1; }
+					if (man_walk < walk_fps) { context.drawImage(man_frames[4], man_x, man_y); man_walk++; man_x -= speed; break; }
+					else if (man_walk < (walk_fps*2)) { context.drawImage(man_frames[5], man_x, man_y); man_walk++; man_x -= speed; break; }
+					context.drawImage(man_frames[4], man_x, man_y);
+					man_walk = 0;
 					man_x -= speed;
 					break;
 				}
@@ -150,12 +177,30 @@
 				return false;
 			};
 
+			var draw_you_win = function() {
+				if (jukebox_music.currentTime > 1) {
+					var zoom_speed = 5;
+					var tx = (canvas.width / 2) - (you_win_crop_width / 2);
+					var ty = (canvas.height / 2) - (you_win_crop_height / 2);
+					// console.log("context.drawImage(you_win, 0, 0," + you_win.width + ", " + you_win.height + ", " + tx + ", " + ty + ", " + you_win_crop_width + ", " + you_win_crop_height + ");");
+					context.drawImage(you_win, 0, 0, you_win.width, you_win.height, tx, ty, you_win_crop_width, you_win_crop_height);
+					if (you_win_crop_width < you_win.width) {
+						you_win_crop_width += zoom_speed;
+						you_win_crop_height += (ratio * zoom_speed);
+					}
+					if (!start_confetti) { cf.start(); start_confetti = true; }
+				}
+			};
+
 			var loop = function() {
 				// console.log("inside loop()");
 				clear_screen();
 				draw_jukebox();
-				draw_text();
+				if (!key_pressed) { draw_text(); }
 				draw_man();
+				if (you_won) {
+					draw_you_win();
+				}
 				setTimeout(loop, fps);
 			};
 
@@ -168,12 +213,14 @@
 					case 40:
 					man_state = "standing";
 					stepping.pause();
+					man_walk = 0;
 					//stepping.currentTime = 0;
 					break;
 				}
 			};
 
 			var keydown = function(e) {	
+				if (!key_pressed) { key_pressed = true; }
 				// console.log("inside keydown()");
 				switch (e.keyCode) {
 					case 32:
